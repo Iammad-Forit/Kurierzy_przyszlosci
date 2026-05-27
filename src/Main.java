@@ -1,4 +1,20 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Main {
+
+    public static void ZapiszDoPliku(String tekst) {
+        String nazwaPliku = "Przebieg_symulacji.txt";
+        try(PrintWriter out = new PrintWriter(new FileWriter(nazwaPliku, true))) {
+            out.println(tekst);
+        } catch (IOException e) {
+            System.out.println("Błąd zapisu do pliku: " + e.getMessage());
+        }
+    }
 
     public static void rysujPlansze(Mapa mapa) {
          String ANSI_RESET = "\u001B[0m";
@@ -56,24 +72,75 @@ public class Main {
         System.out.println("Legenda: K - Kurier, P - Przeciwnik, M - Miasto, L - Las, ^ - Góry, ~ - Rzeka,. - Równiny\n");
     }
 
-    public static void symulujTury(Mapa mapa, Kurier kurier, Lokacja cel, int maxTur) {
+    public static void symulujTury(Mapa mapa, Kurier kurier, Lokacja cel, int maxTur, Przeciwnik przeciwnik) {
         System.out.println("\n--- ROZPOCZĘCIE SYMULACJI ---");
         java.util.Random random = new java.util.Random();
+
+        java.time.format.DateTimeFormatter dta = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String czas = dta.format(java.time.LocalDateTime.now());
+        ZapiszDoPliku("\n============================================");
+        ZapiszDoPliku("Nowa symulacja: " + czas);
+        ZapiszDoPliku("\n============================================");
 
         for (int tura = 1; tura <= maxTur; tura++) {
             System.out.println("\n--- Tura " + tura + " ---");
 
+            ZapiszDoPliku("--- Tura: " + String.format("%3d", tura) + " ---");
+
+            for (Agent agent : mapa.getAgenci()) {
+                String pozycja = "(" + agent.getObecnaPozycja().getX() + ", " + agent.getObecnaPozycja().getY() + ")";
+                if (agent instanceof Kurier) {
+                    Kurier k = (Kurier) agent;
+
+                    String logK = String.format("   Kurier     ID: %2s | HP: %3d | Pozycja: %s",
+                            k.getId(), Math.max(0, k.getZdrowie()), pozycja);
+                    ZapiszDoPliku(logK);
+
+                } else if (agent instanceof Przeciwnik) {
+                    Przeciwnik p = (Przeciwnik) agent;
+
+                    String logP = String.format("   Przeciwnik ID: %2s |         | Pozycja: %s",
+                            p.getId(), pozycja);
+                    ZapiszDoPliku(logP);
+                }
+            }
+
+            ZapiszDoPliku("   Logi:");
 
             for (Agent agent : mapa.getAgenci()) {
                 if (agent instanceof Kurier) {
                     Kurier k = (Kurier) agent;
 
+                    boolean wrogWzasiegu = false;
+                    for(Agent a : mapa.getAgenci()) {
+                        if (a instanceof Przeciwnik) {
+                            int dystans = Math.abs(k.getObecnaPozycja().getX() - a.getObecnaPozycja().getX()) +
+                                    Math.abs(k.getObecnaPozycja().getY() - a.getObecnaPozycja().getY());
+
+                            if(dystans <= k.getZasiegWidzenia()) {
+                                wrogWzasiegu = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(wrogWzasiegu) {
+                        System.out.println("-> Kurier k" + k.getId() + " zauważył przeciwnika, aktualizuje trasę");
+                        ZapiszDoPliku("   -> Kurier k" + k.getId() + " zauważył przeciwnika, aktualizuje trasę");
+
+                        k.obliczTrase(mapa, cel);
+                    }
+
                     // Losujemy wartość od 0.0 do 1.0. Jeśli jest mniejsza niż inteligencja kuriera adaptuje się on do zmian.
                     if (random.nextDouble() < k.getInteligencja()) {
-                        System.out.println("-> [Inteligencja] Kurier " + k.getId() + " analizuje sytuację na mapie i aktualizuje trasę");
+                        System.out.println("-> [Inteligencja] Kurier k" + k.getId() + " analizuje sytuację na mapie i aktualizuje trasę");
+                        ZapiszDoPliku("   -> [Inteligencja] Kurier k" + k.getId() + " analizuje sytuację na mapie i aktualizuje trasę");
+
                         k.obliczTrase(mapa, cel);
                     } else {
                         System.out.println("-> [Inteligencja] Kurier] " + k.getId() + " podąża starą trasą");
+                        ZapiszDoPliku("   -> [Inteligencja] Kurier] " + k.getId() + " podąża starą trasą");
+
+
                     }
 
                     agent.ruch(cel);
@@ -83,18 +150,19 @@ public class Main {
                 }
             }
 
-
             rysujPlansze(mapa);
 
             // Sprawdzenie czy Kurier przeżył
             if (kurier.getZdrowie() <= 0) {
                 System.out.println("\nPorażka | Kurier " + kurier.getId() + " zginął w drodze");
+                ZapiszDoPliku("\nPorażka | Kurier " + kurier.getId() + " zginął w drodze");
                 return;
             }
 
             // Kurier dotarł do celu
             if (kurier.getObecnaPozycja() == cel) {
                 System.out.println("\nSukces | Kurier "+ kurier.getId() +" dostarczył paczkę do miasta " + ((Miasto)cel).getNazwa() + "!");
+                ZapiszDoPliku("\nSukces | Kurier "+ kurier.getId() +" dostarczył paczkę do miasta " + ((Miasto)cel).getNazwa() + "!");
                 if (!kurier.getEkwipunek().isEmpty()) {
                     kurier.getEkwipunek().get(0).setCzyDostarczona(true);
                 }
@@ -109,7 +177,8 @@ public class Main {
             }
         }
 
-        System.out.println("\nOsiągnięto limit tur.");
+        System.out.println("\nOsiągnięto limit tur." + maxTur);
+        ZapiszDoPliku("\nOsiągnięto limit tur." + maxTur);
     }
 
     public static void main(String[] args) {
@@ -172,21 +241,25 @@ public class Main {
         mapa.ustawLokacje(krakow, 9, 9); // Kraków w prawym dolnym rogu
 
         // Inicjalizacja Paczki
-        Paczka paczka = new Paczka();
-        paczka.setIdPaczki("1");
-        paczka.setPunktStartowy(wroclaw);
-        paczka.setPunktDocelowy(krakow);
-        paczka.setWaga(25);
+        Paczka paczka1 = new Paczka();
+        paczka1.setIdPaczki("1");
+        paczka1.setPunktStartowy(wroclaw);
+        paczka1.setPunktDocelowy(krakow);
+        paczka1.setWaga(25);
 
         // Inicjalizacja Kuriera
         Kurier kurier = new Kurier();
         kurier.setId("1");
+        // <1.0; infinity)
         kurier.setDoswiadczenie(1.2f);
-        kurier.setTolerancjaRyzyka(0.3f);
+        // <0.0(Słaba tolerancja na ryzyko); 1.0(Dobra tolerancja na ryzyko)>
+        kurier.setTolerancjaRyzyka(0.1f);
+        // <0.0; 1.0>
         kurier.setInteligencja(0.75f);
-        kurier.setTolerancjaRyzyka(0.3f);
 
-        kurier.getEkwipunek().add(paczka);
+        kurier.setZasiegWidzenia(4);
+
+        kurier.getEkwipunek().add(paczka1);
         kurier.setObecnaPozycja(mapa.getPlansza()[0][0]);
         mapa.getAgenci().add(kurier);
 
@@ -195,7 +268,7 @@ public class Main {
         przeciwnik.setId("1");
         przeciwnik.setSilaAtaku(40);
         przeciwnik.setZasiegWykrywania(2);
-        przeciwnik.setObecnaPozycja(mapa.getPlansza()[5][5]);
+        przeciwnik.setObecnaPozycja(mapa.getPlansza()[1][1]);
         mapa.getAgenci().add(przeciwnik);
 
         // Cel kuriera (Kraków)
@@ -203,7 +276,7 @@ public class Main {
         kurier.obliczTrase(mapa, cel);
 
         // Uruchomenie symulacji
-        symulujTury(mapa, kurier, cel, 30);
+        symulujTury(mapa, kurier, cel, 30, przeciwnik);
 
 
 

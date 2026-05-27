@@ -60,6 +60,7 @@ public class Przeciwnik extends Agent {
                 wykonajLosowyRuch(mapa);
             } else {
                 System.out.println("   -> Przeciwnik P" + this.id + " zauważył kuriera w odległości " + dystans + " pól");
+                Main.ZapiszDoPliku("   -> Przeciwnik P" + this.id + " zauważył kuriera w odległości " + dystans + " pól");
                 atakuj(cel);
             }
         } else {
@@ -67,14 +68,26 @@ public class Przeciwnik extends Agent {
         }
     }
 
+    public void atakuj(Kurier kurier) {
+        System.out.println("   -> Przeciwnik P" + this.getId() + " dopada Kuriera " + kurier.getId() + "!");
+        Main.ZapiszDoPliku("   -> Przeciwnik P" + this.getId() + " dopada Kuriera " + kurier.getId() + "!");
 
-    public void atakuj(Agent cel) {
-        System.out.println("   -> Przeciwnik P" + this.id + " atakuje K" + cel.getId() + " zadając " + this.silaAtaku + " obrażeń");
+        double szansaNaUnik = Math.min(0.1, kurier.getDoswiadczenie() * 0.2);
 
-        int obecneZdrowie = cel.getZdrowie();
-        cel.setZdrowie(obecneZdrowie - this.silaAtaku);
+        if (random.nextDouble() < szansaNaUnik) {
+            System.out.println("   -> [Doświadczenie] Kurier K" + kurier.getId() + " wykorzystuje swoje doświadczenie i unika ciosu");
+            Main.ZapiszDoPliku("   -> [Doświadczenie] Kurier K" + kurier.getId() + " wykorzystuje swoje doświadczenie i unika ciosu");
 
-        System.out.println("   -> Zdrowie kuriera " + cel.getId() + " spada do: " + Math.max(0, cel.getZdrowie()) + " HP.");
+        } else {
+
+            int obrazenia = this.silaAtaku;
+
+            kurier.setZdrowie(kurier.getZdrowie() - obrazenia);
+
+
+            System.out.println("   -> Kurier K" + kurier.getId() + " otrzymuje " + obrazenia + " obrażeń, Pozostałe HP: " + Math.max(0, kurier.getZdrowie()));
+            Main.ZapiszDoPliku("   -> Kurier K" + kurier.getId() + " otrzymuje " + obrazenia + " obrażeń, Pozostałe HP: " + Math.max(0, kurier.getZdrowie()));
+        }
     }
 
 
