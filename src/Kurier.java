@@ -10,6 +10,7 @@ public class Kurier extends Agent {
     private float doswiadczenie;
     private float tolerancjaRyzyka;
     private List<Paczka> ekwipunek = new ArrayList<>();
+    private int zasiegWidzenia;
 
     private List<Lokacja> zaplanowanaTrasa = new ArrayList<>();
 
@@ -113,6 +114,8 @@ public class Kurier extends Agent {
         this.setZdrowie(Zdrowie);
     }
 
+    public int getZasiegWidzenia() {return zasiegWidzenia;}
+    public void setZasiegWidzenia(int zasiegWidzenia) {this.zasiegWidzenia = zasiegWidzenia;}
     public float getTolerancjaRyzyka() { return tolerancjaRyzyka; }
     public void setTolerancjaRyzyka(float tolerancjaRyzyka) { this.tolerancjaRyzyka = tolerancjaRyzyka; }
     public List<Paczka> getEkwipunek() { return ekwipunek; }

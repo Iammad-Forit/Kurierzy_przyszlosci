@@ -45,7 +45,7 @@ public class Mapa {
                     int dystans = Math.abs(l.getX() - przeciwnik.getObecnaPozycja().getX()) +
                             Math.abs(l.getY() - przeciwnik.getObecnaPozycja().getY());
 
-                    if (dystans <= przeciwnik.getZasiegWykrywania() + 1) {
+                    if (dystans <= k.getZasiegWidzenia()) {
                         float wskaznikStrachu = Math.max(0.0f, 1.0f - k.getTolerancjaRyzyka());
                         karaZaRyzyko += 20.0f * wskaznikStrachu;
                     }
