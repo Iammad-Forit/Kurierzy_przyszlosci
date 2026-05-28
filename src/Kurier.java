@@ -119,6 +119,4 @@ public class Kurier extends Agent {
     public float getTolerancjaRyzyka() { return tolerancjaRyzyka; }
     public void setTolerancjaRyzyka(float tolerancjaRyzyka) { this.tolerancjaRyzyka = tolerancjaRyzyka; }
     public List<Paczka> getEkwipunek() { return ekwipunek; }
-    public void setEkwipunek(List<Paczka> ekwipunek) { this.ekwipunek = ekwipunek; } //do dokonczenia
-    public List<Lokacja> getZaplanowanaTrasa() { return zaplanowanaTrasa; } //do dokonczenia
 }

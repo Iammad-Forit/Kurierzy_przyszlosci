@@ -91,8 +91,6 @@ public class Przeciwnik extends Agent {
     }
 
 
-    public int getSilaAtaku() { return silaAtaku; }
     public void setSilaAtaku(int silaAtaku) { this.silaAtaku = silaAtaku; }
-    public int getZasiegWykrywania() { return zasiegWykrywania; }
     public void setZasiegWykrywania(int zasiegWykrywania) { this.zasiegWykrywania = zasiegWykrywania; }
 }
