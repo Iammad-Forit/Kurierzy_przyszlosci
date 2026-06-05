@@ -52,6 +52,7 @@ public class Main {
                     }
                 }
 
+
                 //Agent stojacy na danym polu przykrywa je
                 for (Agent agent : mapa.getAgenci()) {
                     if (agent.getObecnaPozycja() != null &&
