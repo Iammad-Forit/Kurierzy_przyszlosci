@@ -5,6 +5,11 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Główna klasa symulacji Kuriera.
+ * Odpowiada za generowanie mapy, rozstawienie agentów, logging działań do pliku
+ * Obsluguje również działanie głównej pętli turowej gry.
+ */
 public class Main {
 
     public static void ZapiszDoPliku(String tekst) {
@@ -72,6 +77,12 @@ public class Main {
         System.out.println("Legenda: K - Kurier, P - Przeciwnik, M - Miasto, L - Las, ^ - Góry, ~ - Rzeka,. - Równiny\n");
     }
 
+    /**
+     * Główny silnik gry. Steruje pętlą turową, wykonuje ruchy wszystkich agentów,
+     * sprawdza warunki walki, widoczności oraz sukcesu (dostarczenie wszystkich paczek).
+     * @param mapa Wygenerowana mapa zawierająca kurierów, przeciwników i paczki.
+     * @param maxTur Maksymalna ilość tur, po której symulacja zostanie przerwana.
+     */
     public static void symulujTury(Mapa mapa, int maxTur) {
         System.out.println("\n--- ROZPOCZĘCIE SYMULACJI ---");
         java.util.Random random = new java.util.Random();

@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+/**
+ * Klasa reprezentująca Kuriera w symulacji.
+ * Kurierzy podejmują decyzje o wyborze trasy, wykorzystując algorytm Dijkstry.
+ * Ich atrybuty (doświadczenie, inteligencja, tolerancja ryzyka) wpływają na ich zachowanie.
+ */
 public class Kurier extends Agent {
     private float inteligencja;
     private float doswiadczenie;
@@ -46,6 +51,13 @@ public class Kurier extends Agent {
         }
     }
 
+    /**
+     * Główny algorytm nawigacyjny Kuriera oparty na algorytmie Dijkstry.
+     * Przelicza najtańszą punktowo trasę z obecnej pozycji do celu w danym momencie,
+     * biorąc pod uwagę ukształtowanie terenu oraz rozlokowanie przeciwników.
+     * @param mapa Obiekt mapy zawierający dane o terenie i przeciwnikach.
+     * @param cel Lokacja docelowa.
+     */
     public void obliczTrase(Mapa mapa, Lokacja cel) {
         PriorityQueue<Wezel> otwarte = new PriorityQueue<>();
         Map<Lokacja, Float> koszty = new HashMap<>();
@@ -107,7 +119,10 @@ public class Kurier extends Agent {
     public void setInteligencja(float inteligencja) { this.inteligencja = inteligencja; }
     public double getDoswiadczenie() { return doswiadczenie; }
 
-    // Zmiana parametru zdrowia na podstawie doswiadczenia kuriera
+    /**
+     * Zmienia doświadczenie kuriera i automatycznie przelicza jego maksymalne punkty zdrowia.
+     * @param doswiadczenie Wartość doświadczenia (zalecane od 1.0 do 2.0).
+     */
     public void setDoswiadczenie(float doswiadczenie) {
         this.doswiadczenie = doswiadczenie;
         int Zdrowie = (int) (100 * doswiadczenie);

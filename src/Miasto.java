@@ -1,3 +1,9 @@
+/**
+ * Klasa reprezentująca miasto.
+ * Jest to lokacja będąca punktem startowym lub docelowym paczki.
+ * Koszt bazowy ruchu przez miasto wynosi 1.
+ */
+
 public class Miasto extends Lokacja {
     private String nazwa;
     private boolean czyBezpiecznaStrefa;

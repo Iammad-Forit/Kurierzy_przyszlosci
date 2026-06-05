@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Główna klasa zarządzająca planszą symulacji.
+ * Przechowuje siatkę lokacji oraz listę wszystkich aktywnych agentów na mapie.
+ * Odpowiada również za zaawansowane wyliczanie kosztów ruchu.
+ */
 public class Mapa {
     private int szerokosc;
     private int wysokosc;
@@ -14,6 +19,20 @@ public class Mapa {
         this.plansza = new Lokacja[szerokosc][wysokosc];
     }
 
+    /**
+     * Zaawansowana metoda obliczająca całkowity koszt wejścia na dane pole przez kuriera.
+     * Algorytm bierze pod uwagę:
+     * <ul>
+     * <li>Bazowy koszt terenu </li>
+     * <li>Wagę niesionej paczki (która potęguje koszt)</li>
+     * <li>Doświadczenie kuriera (które zmniejsza koszt całkowity)</li>
+     * <li>Strach przed wrogiem (zwiększa koszt pól w promieniu zasięgu wzroku wroga)</li>
+     * </ul>
+     *
+     * @param k Kurier, dla którego obliczany jest koszt ruchu.
+     * @param l Lokacja, na którą kurier potencjalnie chce wejść.
+     * @return Zmodyfikowany koszt punktowy ruchu (zawsze min 1.0).
+     */
     public float obliczKosztRuchu(Kurier k, Lokacja l) {
         float bazowyKoszt = l.pobierzKosztRuchu();
 

@@ -1,3 +1,7 @@
+/**
+ * Abstrakcyjna klasa bazowa reprezentująca każdą ruchomą jednostkę w symulacji (Kuriera lub Przeciwnika).
+ * Definiuje podstawowe atrybuty agenta, takie jak identyfikator, obecna pozycja na mapie oraz punkty zdrowia.
+ */
 public abstract class Agent {
     protected String id;
     protected Lokacja obecnaPozycja;

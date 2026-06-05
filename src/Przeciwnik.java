@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Klasa reprezentująca Przeciwnika.
+ * Przeciwnik przemierza mapę w sposób losowy w poszukiwaniu kurierów.
+ * Jeżeli kurier znajdzie się w ich zasiegu wykrywania to inicjuje walkę.
+ */
 public class Przeciwnik extends Agent {
     private int silaAtaku;
     private int zasiegWykrywania;
@@ -68,6 +73,11 @@ public class Przeciwnik extends Agent {
         }
     }
 
+    /**
+     * Główna mechanika walki. Przeciwnik atakuje kuriera, zadając mu obrażenia.
+     * Kurier ma szansę na uniknięcie ciosu w oparciu o swoje doświadczenie.
+     * @param kurier Obiekt Kuriera, który stał się celem ataku.
+     */
     public void atakuj(Kurier kurier) {
         System.out.println("   -> Przeciwnik P" + this.getId() + " dopada Kuriera " + kurier.getId() + "!");
         Main.ZapiszDoPliku("   -> Przeciwnik P" + this.getId() + " dopada Kuriera " + kurier.getId() + "!");

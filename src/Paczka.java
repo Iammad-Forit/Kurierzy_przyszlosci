@@ -1,3 +1,7 @@
+/**
+ * Klasa reprezentująca przesyłkę przenoszoną przez Kuriera.
+ * Posiada parametry okreslajace jej indentyfikator, punkt startowy i docelowy, wagę oraz stan dostarczenia
+ */
 public class Paczka {
     private String idPaczki;
     private Miasto punktStartowy;
